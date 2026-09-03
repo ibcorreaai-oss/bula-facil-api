@@ -47,10 +47,10 @@ export default function Privacy() {
 
       <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>Aviso médico</h2>
       <p>
-        O Bula Fácil não é um dispositivo médico, não faz diagnóstico e não substitui a
-        orientação de um médico ou farmacêutico licenciado. As explicações são um resumo
-        educativo em linguagem simples — sempre confirme qualquer decisão sobre medicamentos com
-        um profissional de saúde.
+        O Bula Fácil não é um dispositivo médico e não diagnostica, trata, cura ou previne
+        nenhuma condição médica. As explicações são geradas por inteligência artificial e são um
+        resumo educativo em linguagem simples — sempre confirme qualquer decisão sobre
+        medicamentos com um médico ou farmacêutico licenciado.
       </p>
 
       <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>Contato</h2>

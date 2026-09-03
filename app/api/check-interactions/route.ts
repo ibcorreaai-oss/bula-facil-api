@@ -64,7 +64,7 @@ function normalize(parsed: any): InteractionResult {
       : [],
     disclaimer:
       String(parsed?.disclaimer ?? "").trim() ||
-      "This is educational information, not medical advice. Always review your full medication list with a doctor or pharmacist.",
+      "Bula Fácil is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. This is educational information, not medical advice. Always review your full medication list with a doctor or pharmacist.",
   };
 }
 
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
           : "Modo demonstração: configure GROQ_API_KEY no servidor para checagem real.",
       pairs: [],
       disclaimer:
-        "This is educational information, not medical advice. Always review your full medication list with a doctor or pharmacist.",
+        "Bula Fácil is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. This is educational information, not medical advice. Always review your full medication list with a doctor or pharmacist.",
     });
   }
 

@@ -87,7 +87,7 @@ function normalize(parsed: any): MedicationExplanation {
     seekCareSoon: Boolean(parsed.seekCareSoon),
     disclaimer:
       String(parsed.disclaimer ?? "").trim() ||
-      "This is a plain-language summary, not medical advice. Always confirm with a licensed doctor or pharmacist before making any decision about your medication.",
+      "Bula Fácil is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Always confirm with a licensed doctor or pharmacist before making any decision about your medication.",
   };
 }
 

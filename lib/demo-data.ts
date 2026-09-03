@@ -28,7 +28,7 @@ const DEMO_PT: MedicationExplanation = {
     "É normal ficar em dúvida na hora de ler uma bula — a linguagem é feita pra bula técnica, não pra explicar pra você. Esse remédio é um dos antibióticos mais usados e estudados no mundo, então as informações acima são bem conhecidas.",
   seekCareSoon: false,
   disclaimer:
-    "Este é um resumo em linguagem simples, não é orientação médica. Sempre confirme com um médico ou farmacêutico antes de tomar qualquer decisão sobre seu medicamento.",
+    "Bula Fácil não é um dispositivo médico e não diagnostica, trata, cura ou previne nenhuma condição médica. Sempre confirme com um médico ou farmacêutico antes de tomar qualquer decisão sobre seu medicamento.",
 };
 
 const DEMO_EN: MedicationExplanation = {
@@ -59,7 +59,7 @@ const DEMO_EN: MedicationExplanation = {
     "It's completely normal to feel confused reading a medication label — that language is written for pharmacists, not for you. This is one of the most widely used and well-studied antibiotics in the world, so the information above is well established.",
   seekCareSoon: false,
   disclaimer:
-    "This is a plain-language summary, not medical advice. Always confirm with a licensed doctor or pharmacist before making any decision about your medication.",
+    "Bula Fácil is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Always confirm with a licensed doctor or pharmacist before making any decision about your medication.",
 };
 
 export function getDemoExplanation(language: ExplainLanguage): MedicationExplanation {
