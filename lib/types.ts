@@ -1,4 +1,4 @@
-export type ExplainLanguage = "pt" | "en";
+export type ExplainLanguage = "pt" | "en" | "es" | "fr" | "zh";
 
 export type SideEffectSeverity = "common" | "serious";
 

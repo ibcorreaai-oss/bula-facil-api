@@ -14,38 +14,39 @@ export default function Home() {
           fontWeight: 600,
         }}
       >
-        💊 Grátis · Não é orientação médica
+        💊🩺 Free · Not medical advice
       </div>
-      <h1 style={{ fontSize: 34, fontWeight: 800, marginTop: 12 }}>Bula Fácil</h1>
+      <h1 style={{ fontSize: 34, fontWeight: 800, marginTop: 12 }}>Explicare</h1>
       <p style={{ fontSize: 17, opacity: 0.85 }}>
-        Fotografe a bula de um remédio ou uma receita médica e entenda, em linguagem simples,
-        pra que serve, como tomar e o que observar — sem trocar a orientação do seu médico ou
-        farmacêutico.
+        Photograph a medicine label, prescription, or lab result and understand, in plain
+        language, what it's for, how to use it, and what to watch out for — without replacing
+        your doctor's or pharmacist's guidance. Available in Portuguese, English, Spanish,
+        French, and Chinese.
       </p>
 
       <section style={{ marginTop: 32 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 700 }}>Como funciona</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 700 }}>How it works</h2>
         <ol style={{ paddingLeft: 20 }}>
-          <li>Aponte a câmera pra caixa do remédio, bula ou receita.</li>
-          <li>A IA explica em linguagem simples o que aquilo significa.</li>
-          <li>Confirme que entendeu os pontos mais importantes antes de seguir.</li>
+          <li>Point the camera at the medicine box, package insert, prescription, or lab result.</li>
+          <li>The AI explains in plain language what it means.</li>
+          <li>Confirm you understood the most important points before moving on.</li>
         </ol>
       </section>
 
       <section style={{ marginTop: 32 }}>
-        <h2 style={{ fontSize: 20, fontWeight: 700 }}>Privacidade</h2>
+        <h2 style={{ fontSize: 20, fontWeight: 700 }}>Privacy</h2>
         <p>
-          A foto é analisada só pra gerar a explicação e não fica guardada em nenhum servidor.
-          Seu histórico de remédios fica salvo apenas no seu aparelho. Leia a{" "}
+          The photo is analyzed only to generate the explanation and is never stored on any
+          server. Your history is saved only on your own device. Read the{" "}
           <a href="/privacy" style={{ color: "#0F766E" }}>
-            política de privacidade completa
+            full privacy policy
           </a>
           .
         </p>
       </section>
 
       <footer style={{ marginTop: 48, fontSize: 13, opacity: 0.6 }}>
-        Bula Fácil é um produto Cortex Tech. Dúvidas ou suporte:{" "}
+        Explicare is a Cortex Tech product. Questions or support:{" "}
         <a href="mailto:cortextechbr@gmail.com">cortextechbr@gmail.com</a>
       </footer>
     </main>

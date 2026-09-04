@@ -19,6 +19,9 @@ interface InteractionResult {
 const LANGUAGE_INSTRUCTIONS: Record<ExplainLanguage, string> = {
   pt: "Respond in Brazilian Portuguese (pt-BR), plain everyday language.",
   en: "Respond in English, plain everyday language.",
+  es: "Respond in Spanish (neutral, broadly understandable), plain everyday language.",
+  fr: "Respond in French, plain everyday language.",
+  zh: "Respond in Simplified Chinese (简体中文), plain everyday language.",
 };
 
 const SYSTEM_PROMPT = `You are a medication interaction educator. You receive a list of medication names a
@@ -64,9 +67,27 @@ function normalize(parsed: any): InteractionResult {
       : [],
     disclaimer:
       String(parsed?.disclaimer ?? "").trim() ||
-      "Bula Fácil is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. This is educational information, not medical advice. Always review your full medication list with a doctor or pharmacist.",
+      "Explicare is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. This is educational information, not medical advice. Always review your full medication list with a doctor or pharmacist.",
   };
 }
+
+const SUPPORTED_LANGUAGES: ExplainLanguage[] = ["pt", "en", "es", "fr", "zh"];
+
+const DEMO_SUMMARY: Record<ExplainLanguage, string> = {
+  pt: "Modo demonstração: configure GROQ_API_KEY no servidor para checagem real.",
+  en: "Demo mode: configure GROQ_API_KEY on the server to check real interactions.",
+  es: "Modo demostración: configure GROQ_API_KEY en el servidor para una verificación real.",
+  fr: "Mode démo : configurez GROQ_API_KEY sur le serveur pour une vérification réelle.",
+  zh: "演示模式：请在服务器上配置 GROQ_API_KEY 以进行真实的相互作用检查。",
+};
+
+const GENERIC_ERROR_MESSAGE: Record<ExplainLanguage, string> = {
+  pt: "Algo deu errado. Tente novamente.",
+  en: "Something went wrong. Please try again.",
+  es: "Algo salió mal. Inténtelo de nuevo.",
+  fr: "Une erreur s'est produite. Veuillez réessayer.",
+  zh: "出了点问题。请再试一次。",
+};
 
 export async function POST(req: NextRequest) {
   let body: CheckInteractionsBody;
@@ -77,7 +98,9 @@ export async function POST(req: NextRequest) {
   }
 
   const names = (body.medicationNames ?? []).map((n) => String(n).trim()).filter(Boolean);
-  const language = body.language === "en" ? "en" : "pt";
+  const language: ExplainLanguage = SUPPORTED_LANGUAGES.includes(body.language as ExplainLanguage)
+    ? (body.language as ExplainLanguage)
+    : "en";
 
   if (names.length < 2) {
     return NextResponse.json({ error: "Need at least 2 medications to check." }, { status: 400 });
@@ -91,22 +114,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       isDemo: true,
       hasKnownInteractions: false,
-      summary:
-        language === "en"
-          ? "Demo mode: configure GROQ_API_KEY on the server to check real interactions."
-          : "Modo demonstração: configure GROQ_API_KEY no servidor para checagem real.",
+      summary: DEMO_SUMMARY[language],
       pairs: [],
       disclaimer:
-        "Bula Fácil is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. This is educational information, not medical advice. Always review your full medication list with a doctor or pharmacist.",
+        "Explicare is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. This is educational information, not medical advice. Always review your full medication list with a doctor or pharmacist.",
     });
   }
 
   try {
     const groq = new Groq({ apiKey });
     const completion = await groq.chat.completions.create({
-      model: "llama-3.3-70b-versatile",
+      model: "openai/gpt-oss-120b",
       temperature: 0.2,
       max_tokens: 1200,
+      reasoning_effort: "low",
       response_format: { type: "json_object" },
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
@@ -121,9 +142,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result);
   } catch (err) {
     console.error("check-interactions error", err);
-    return NextResponse.json(
-      { error: language === "en" ? "Something went wrong. Please try again." : "Algo deu errado. Tente novamente." },
-      { status: 502 }
-    );
+    return NextResponse.json({ error: GENERIC_ERROR_MESSAGE[language] }, { status: 502 });
   }
 }

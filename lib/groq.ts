@@ -4,9 +4,12 @@ import { ExplainLanguage, MedicationExplanation } from "./types";
 const LANGUAGE_INSTRUCTIONS: Record<ExplainLanguage, string> = {
   pt: "Respond in Brazilian Portuguese (pt-BR), using plain everyday language a person with no medical background would understand.",
   en: "Respond in English, using plain everyday language a person with no medical background would understand.",
+  es: "Respond in Spanish (neutral, broadly understandable across Latin America and Spain), using plain everyday language a person with no medical background would understand.",
+  fr: "Respond in French, using plain everyday language a person with no medical background would understand.",
+  zh: "Respond in Simplified Chinese (简体中文), using plain everyday language a person with no medical background would understand.",
 };
 
-const SYSTEM_PROMPT = `You are Bula Fácil, an assistant that looks at a photo of a medicine package, package insert ("bula"), or handwritten/printed prescription, and explains it in plain, calm, non-alarming language for the patient.
+const SYSTEM_PROMPT = `You are Explicare, an assistant that looks at a photo of a medicine package, package insert ("bula"/"prospecto"/"notice"), or handwritten/printed prescription, and explains it in plain, calm, non-alarming language for the patient.
 
 Rules you must always follow:
 - Only name a medication if you can read it clearly and confidently in the photo. If the photo is blurry, cropped, too dark, or you cannot confidently identify the medication name, respond with exactly {"error": "unclear_photo"} instead of guessing — a wrong medication name is dangerous, never invent or assume one.
@@ -87,7 +90,7 @@ function normalize(parsed: any): MedicationExplanation {
     seekCareSoon: Boolean(parsed.seekCareSoon),
     disclaimer:
       String(parsed.disclaimer ?? "").trim() ||
-      "Bula Fácil is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Always confirm with a licensed doctor or pharmacist before making any decision about your medication.",
+      "Explicare is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Always confirm with a licensed doctor or pharmacist before making any decision about your medication.",
   };
 }
 

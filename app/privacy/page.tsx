@@ -1,61 +1,59 @@
 export default function Privacy() {
   return (
     <main style={{ maxWidth: 640, margin: "0 auto", padding: "48px 20px", lineHeight: 1.7 }}>
-      <h1 style={{ fontSize: 28, fontWeight: 800 }}>Política de Privacidade — Bula Fácil</h1>
-      <p style={{ opacity: 0.6, fontSize: 14 }}>Última atualização: setembro de 2026</p>
+      <h1 style={{ fontSize: 28, fontWeight: 800 }}>Privacy Policy — Explicare</h1>
+      <p style={{ opacity: 0.6, fontSize: 14 }}>Last updated: September 2026</p>
 
-      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>O que fazemos com a foto</h2>
+      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>What we do with your photo</h2>
       <p>
-        Quando você fotografa uma bula, embalagem de remédio ou receita, a imagem é enviada, de
-        forma criptografada, para gerar a explicação em linguagem simples usando um serviço de
-        inteligência artificial de terceiro (Groq). A imagem é processada em memória para gerar
-        essa resposta e não é armazenada pelos servidores do Bula Fácil depois que a resposta é
-        gerada. Não usamos suas fotos para treinar modelos de IA.
+        When you photograph a medicine label, package insert, prescription, or lab result, the
+        image is sent, encrypted in transit, to generate the plain-language explanation using a
+        third-party artificial intelligence service (Groq). The image is processed in memory to
+        generate that response and is not stored on Explicare's servers afterward. We do not use
+        your photos to train any AI models.
       </p>
 
-      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>O que fica salvo no seu aparelho</h2>
+      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>What stays on your device</h2>
       <p>
-        Seu histórico de remédios explicados (nome do medicamento, explicação e, se você optar,
-        a foto) fica salvo apenas localmente no seu celular, em um banco de dados local
-        (SQLite). Não temos acesso a esse histórico e ele não é enviado para nenhum servidor
-        nosso. Se você desinstalar o app ou apagar os dados dele, esse histórico é apagado
-        também.
+        Your history of explained items (medication or lab result name, the explanation, and,
+        if you choose, the photo) is saved only locally on your phone, in a local database
+        (SQLite). We have no access to this history and it is never sent to any server of ours.
+        If you uninstall the app or clear its data, this history is deleted as well.
       </p>
 
-      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>Assinatura e compras</h2>
+      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>Subscriptions and purchases</h2>
       <p>
-        Assinaturas premium são processadas pela Apple, Google ou Samsung (conforme a loja de
-        onde você baixou o app) e gerenciadas tecnicamente pela RevenueCat, que recebe apenas os
-        dados necessários para validar sua compra (um identificador anônimo de usuário e o status
-        da assinatura) — nunca dados de cartão de crédito, que ficam só com a própria loja de
-        aplicativos.
+        Premium subscriptions are processed by Apple, Google, or Samsung (depending on which
+        store you downloaded the app from) and technically managed by RevenueCat, which receives
+        only the data necessary to validate your purchase (an anonymous user identifier and
+        subscription status) — never credit card data, which stays with the app store itself.
       </p>
 
-      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>O que NÃO fazemos</h2>
+      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>What we do NOT do</h2>
       <ul style={{ paddingLeft: 20 }}>
-        <li>Não exibimos anúncios de terceiros.</li>
-        <li>Não vendemos ou compartilhamos seus dados com anunciantes.</li>
-        <li>Não exigimos cadastro, login ou e-mail para usar as funções principais do app.</li>
-        <li>Não rastreamos sua localização.</li>
+        <li>We do not show third-party ads.</li>
+        <li>We do not sell or share your data with advertisers.</li>
+        <li>We do not require sign-up, login, or an email address to use the app's core features.</li>
+        <li>We do not track your location.</li>
       </ul>
 
-      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>Crianças</h2>
+      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>Children</h2>
       <p>
-        O Bula Fácil não é direcionado a crianças e não coleta intencionalmente dados de menores
-        de 13 anos.
+        Explicare is not directed at children and does not knowingly collect data from anyone
+        under 13.
       </p>
 
-      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>Aviso médico</h2>
+      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>Medical disclaimer</h2>
       <p>
-        O Bula Fácil não é um dispositivo médico e não diagnostica, trata, cura ou previne
-        nenhuma condição médica. As explicações são geradas por inteligência artificial e são um
-        resumo educativo em linguagem simples — sempre confirme qualquer decisão sobre
-        medicamentos com um médico ou farmacêutico licenciado.
+        Explicare is not a medical device and does not diagnose, treat, cure, or prevent any
+        medical condition. Explanations are generated by artificial intelligence and are an
+        educational, plain-language summary — always confirm any decision about medication or
+        lab results with a licensed doctor or pharmacist.
       </p>
 
-      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>Contato</h2>
+      <h2 style={{ fontSize: 19, fontWeight: 700, marginTop: 28 }}>Contact</h2>
       <p>
-        Dúvidas sobre privacidade: <a href="mailto:cortextechbr@gmail.com">cortextechbr@gmail.com</a>
+        Privacy questions: <a href="mailto:cortextechbr@gmail.com">cortextechbr@gmail.com</a>
       </p>
     </main>
   );
