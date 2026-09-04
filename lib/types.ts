@@ -26,3 +26,24 @@ export interface ExplainRequestBody {
   mimeType: string;
   language: ExplainLanguage;
 }
+
+export type LabParameterStatus = "normal" | "attention" | "out_of_range" | "undetermined";
+
+export interface LabParameter {
+  name: string;
+  valueFound: string;
+  referenceRange: string;
+  status: LabParameterStatus;
+  explanation: string;
+}
+
+export interface LabExplanation {
+  examTitle: string;
+  summary: string;
+  parameters: LabParameter[];
+  questionsForDoctor: string[];
+  reassurance: string;
+  seekCareSoon: boolean;
+  disclaimer: string;
+  isDemo?: boolean;
+}

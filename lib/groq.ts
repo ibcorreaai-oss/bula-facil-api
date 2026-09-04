@@ -109,7 +109,12 @@ export async function explainMedication(
   const completion = await groq.chat.completions.create({
     model: "qwen/qwen3.6-27b",
     temperature: 0.3,
-    max_tokens: 2000,
+    // This account's current Groq free tier caps output tokens per minute (OTPM) at 1000 for
+    // this vision model -- max_tokens above that gets rejected with a 429 before the call even
+    // runs (confirmed empirically 04/09/2026, tighter than when this endpoint was last tested).
+    max_tokens: 1000,
+    reasoning_effort: "none",
+    reasoning_format: "hidden",
     response_format: { type: "json_object" },
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
