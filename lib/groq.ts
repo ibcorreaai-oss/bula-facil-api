@@ -9,6 +9,27 @@ const LANGUAGE_INSTRUCTIONS: Record<ExplainLanguage, string> = {
   zh: "Respond in Simplified Chinese (简体中文), using plain everyday language a person with no medical background would understand.",
 };
 
+// Used only when the model's response omits these fields -- must stay localized so a
+// truncated/malformed response never surfaces an English paragraph on a non-English screen.
+const FALLBACK_REASSURANCE: Record<ExplainLanguage, string> = {
+  pt: "É completamente normal se sentir incerto ao ler a bula de um remédio. Vá com calma, e um farmacêutico ou médico sempre pode esclarecer qualquer dúvida.",
+  en: "It's completely normal to feel unsure reading a medicine label. Take your time, and a pharmacist or doctor can always clarify anything that isn't clear.",
+  es: "Es completamente normal sentirse inseguro al leer la etiqueta de un medicamento. Tómese su tiempo, un farmacéutico o médico siempre puede aclarar cualquier duda.",
+  fr: "Il est tout à fait normal de se sentir incertain en lisant l'étiquette d'un médicament. Prenez votre temps, un pharmacien ou un médecin peut toujours clarifier ce qui n'est pas clair.",
+  zh: "阅读药品标签时感到不确定是完全正常的。慢慢来，药剂师或医生随时可以为您解答不清楚的地方。",
+};
+// Must stay byte-identical to ExplanationView.tsx's own `t.disclaimer` per language --
+// ExplanationView only shows explanation.disclaimer as a SECOND line when it differs from its
+// own hardcoded copy, so any drift here (even a missing word) causes the boilerplate disclaimer
+// to render twice on screen whenever this fallback is used.
+const FALLBACK_DISCLAIMER: Record<ExplainLanguage, string> = {
+  pt: "Explicare não é um dispositivo médico e não diagnostica, trata, cura ou previne nenhuma condição médica. Sempre confirme com um médico ou farmacêutico antes de tomar qualquer decisão sobre seu medicamento.",
+  en: "Explicare is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Always confirm with a licensed doctor or pharmacist before making any decision about your medication.",
+  es: "Explicare no es un dispositivo médico y no diagnostica, trata, cura ni previene ninguna afección médica. Confirme siempre con un médico o farmacéutico antes de tomar cualquier decisión sobre su medicamento.",
+  fr: "Explicare n'est pas un dispositif médical et ne diagnostique, ne traite, ne guérit ni ne prévient aucune condition médicale. Confirmez toujours avec un médecin ou un pharmacien avant de prendre une décision concernant votre médicament.",
+  zh: "Explicare 不是医疗器械，不能诊断、治疗、治愈或预防任何疾病。在对用药做出任何决定之前，请务必咨询执业医生或药剂师。",
+};
+
 const SYSTEM_PROMPT = `You are Explicare, an assistant that looks at a photo of a medicine package, package insert ("bula"/"prospecto"/"notice"), or handwritten/printed prescription, and explains it in plain, calm, non-alarming language for the patient.
 
 Rules you must always follow:
@@ -61,7 +82,7 @@ function extractJson(raw: string): unknown {
   }
 }
 
-function normalize(parsed: any): MedicationExplanation {
+function normalize(parsed: any, language: ExplainLanguage): MedicationExplanation {
   if (!parsed || typeof parsed !== "object") {
     throw new Error("Malformed explanation payload");
   }
@@ -84,13 +105,9 @@ function normalize(parsed: any): MedicationExplanation {
     questionsForDoctor: Array.isArray(parsed.questionsForDoctor)
       ? parsed.questionsForDoctor.map((q: any) => String(q))
       : [],
-    reassurance:
-      String(parsed.reassurance ?? "").trim() ||
-      "It's completely normal to feel unsure reading a medicine label. Take your time, and a pharmacist or doctor can always clarify anything that isn't clear.",
+    reassurance: String(parsed.reassurance ?? "").trim() || FALLBACK_REASSURANCE[language],
     seekCareSoon: Boolean(parsed.seekCareSoon),
-    disclaimer:
-      String(parsed.disclaimer ?? "").trim() ||
-      "Explicare is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Always confirm with a licensed doctor or pharmacist before making any decision about your medication.",
+    disclaimer: String(parsed.disclaimer ?? "").trim() || FALLBACK_DISCLAIMER[language],
   };
 }
 
@@ -133,5 +150,5 @@ export async function explainMedication(
 
   const raw = completion.choices[0]?.message?.content ?? "";
   const parsed = extractJson(raw);
-  return normalize(parsed);
+  return normalize(parsed, language);
 }

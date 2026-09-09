@@ -9,6 +9,27 @@ const LANGUAGE_INSTRUCTIONS: Record<ExplainLanguage, string> = {
   zh: "Respond in Simplified Chinese (简体中文), using plain everyday language a person with no medical background would understand.",
 };
 
+// Used only when the model's response omits these fields -- must stay localized so a
+// truncated/malformed response never surfaces an English paragraph on a non-English screen.
+const FALLBACK_REASSURANCE: Record<ExplainLanguage, string> = {
+  pt: "É completamente normal se sentir um pouco ansioso ao ler um resultado de exame. Vá com calma, e lembre-se: um médico licenciado é a pessoa certa pra interpretar o que isso significa pra você.",
+  en: "It's completely normal to feel a little anxious reading lab results. Take your time going through this, and remember a licensed doctor is the right person to interpret what it means for you.",
+  es: "Es completamente normal sentirse un poco ansioso al leer resultados de laboratorio. Tómese su tiempo, y recuerde que un médico autorizado es la persona indicada para interpretar lo que esto significa para usted.",
+  fr: "Il est tout à fait normal de se sentir un peu anxieux en lisant des résultats de laboratoire. Prenez votre temps, et rappelez-vous qu'un médecin agréé est la bonne personne pour interpréter ce que cela signifie pour vous.",
+  zh: "阅读化验结果时感到有点焦虑是完全正常的。请慢慢查看，并记住持证医生才是解读这些结果对您意义的合适人选。",
+};
+// Must stay byte-identical to LabResultView.tsx's own `t.disclaimer` per language --
+// LabResultView only shows explanation.disclaimer as a SECOND line when it differs from its
+// own hardcoded copy, so any drift here (even a missing word) causes the boilerplate disclaimer
+// to render twice on screen whenever this fallback is used.
+const FALLBACK_DISCLAIMER: Record<ExplainLanguage, string> = {
+  pt: "Explicare não é um dispositivo médico e não diagnostica, trata, cura ou previne nenhuma condição médica. Sempre confirme com um médico antes de tomar qualquer decisão com base nesses resultados.",
+  en: "Explicare is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Always confirm with a licensed doctor before making any decision based on these results.",
+  es: "Explicare no es un dispositivo médico y no diagnostica, trata, cura ni previene ninguna afección médica. Confirme siempre con un médico antes de tomar cualquier decisión basada en estos resultados.",
+  fr: "Explicare n'est pas un dispositif médical et ne diagnostique, ne traite, ne guérit ni ne prévient aucune condition médicale. Confirmez toujours avec un médecin avant de prendre une décision basée sur ces résultats.",
+  zh: "Explicare 不是医疗器械，不能诊断、治疗、治愈或预防任何疾病。在根据这些结果做出任何决定之前，请务必咨询执业医生。",
+};
+
 const SYSTEM_PROMPT = `You are Explicare, an assistant that looks at a photo of a laboratory test result (blood work, urine test, or similar panel) and explains it in plain, calm, non-alarming language for the patient.
 
 Rules you must always follow:
@@ -59,7 +80,7 @@ function extractJson(raw: string): unknown {
   }
 }
 
-function normalize(parsed: any): LabExplanation {
+function normalize(parsed: any, language: ExplainLanguage): LabExplanation {
   if (!parsed || typeof parsed !== "object") {
     throw new Error("Malformed explanation payload");
   }
@@ -80,13 +101,9 @@ function normalize(parsed: any): LabExplanation {
     questionsForDoctor: Array.isArray(parsed.questionsForDoctor)
       ? parsed.questionsForDoctor.map((q: any) => String(q))
       : [],
-    reassurance:
-      String(parsed.reassurance ?? "").trim() ||
-      "It's completely normal to feel a little anxious reading lab results. Take your time going through this, and remember a licensed doctor is the right person to interpret what it means for you.",
+    reassurance: String(parsed.reassurance ?? "").trim() || FALLBACK_REASSURANCE[language],
     seekCareSoon: Boolean(parsed.seekCareSoon),
-    disclaimer:
-      String(parsed.disclaimer ?? "").trim() ||
-      "Explicare is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. Always confirm with a licensed doctor before making any decision based on these results.",
+    disclaimer: String(parsed.disclaimer ?? "").trim() || FALLBACK_DISCLAIMER[language],
   };
 }
 
@@ -129,5 +146,5 @@ export async function explainLabResult(
 
   const raw = completion.choices[0]?.message?.content ?? "";
   const parsed = extractJson(raw);
-  return normalize(parsed);
+  return normalize(parsed, language);
 }

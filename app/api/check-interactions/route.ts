@@ -54,7 +54,7 @@ function extractJson(raw: string): unknown {
   }
 }
 
-function normalize(parsed: any): InteractionResult {
+function normalize(parsed: any, language: ExplainLanguage): InteractionResult {
   return {
     hasKnownInteractions: Boolean(parsed?.hasKnownInteractions),
     summary: String(parsed?.summary ?? "").trim(),
@@ -65,9 +65,7 @@ function normalize(parsed: any): InteractionResult {
           severity: ["minor", "moderate", "serious"].includes(p?.severity) ? p.severity : "minor",
         }))
       : [],
-    disclaimer:
-      String(parsed?.disclaimer ?? "").trim() ||
-      "Explicare is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. This is educational information, not medical advice. Always review your full medication list with a doctor or pharmacist.",
+    disclaimer: String(parsed?.disclaimer ?? "").trim() || FALLBACK_INTERACTIONS_DISCLAIMER[language],
   };
 }
 
@@ -89,6 +87,30 @@ const GENERIC_ERROR_MESSAGE: Record<ExplainLanguage, string> = {
   zh: "出了点问题。请再试一次。",
 };
 
+const NEED_MORE_MEDICATIONS_ERROR: Record<ExplainLanguage, string> = {
+  pt: "É preciso pelo menos 2 medicamentos para checar interação.",
+  en: "Need at least 2 medications to check.",
+  es: "Se necesitan al menos 2 medicamentos para verificar.",
+  fr: "Il faut au moins 2 médicaments pour vérifier.",
+  zh: "需要至少两种药物才能进行检查。",
+};
+
+const TOO_MANY_MEDICATIONS_ERROR: Record<ExplainLanguage, string> = {
+  pt: "Muitos medicamentos pra checar de uma vez.",
+  en: "Too many medications in one check.",
+  es: "Demasiados medicamentos para verificar a la vez.",
+  fr: "Trop de médicaments pour une seule vérification.",
+  zh: "一次检查的药物过多。",
+};
+
+const FALLBACK_INTERACTIONS_DISCLAIMER: Record<ExplainLanguage, string> = {
+  pt: "O Explicare não é um dispositivo médico e não diagnostica, trata, cura ou previne nenhuma condição médica. Isto é informação educacional, não é aconselhamento médico. Sempre revise sua lista completa de medicamentos com um médico ou farmacêutico.",
+  en: "Explicare is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. This is educational information, not medical advice. Always review your full medication list with a doctor or pharmacist.",
+  es: "Explicare no es un dispositivo médico y no diagnostica, trata, cura ni previene ninguna condición médica. Esta es información educativa, no un consejo médico. Siempre revise su lista completa de medicamentos con un médico o farmacéutico.",
+  fr: "Explicare n'est pas un dispositif médical et ne diagnostique, ne traite, ne guérit ni ne prévient aucune condition médicale. Il s'agit d'informations éducatives, pas d'un avis médical. Révisez toujours votre liste complète de médicaments avec un médecin ou un pharmacien.",
+  zh: "Explicare不是医疗设备，不会诊断、治疗、治愈或预防任何医疗状况。这是教育信息，不是医疗建议。请务必与医生或药剂师一起核对您的完整用药清单。",
+};
+
 export async function POST(req: NextRequest) {
   let body: CheckInteractionsBody;
   try {
@@ -103,10 +125,10 @@ export async function POST(req: NextRequest) {
     : "en";
 
   if (names.length < 2) {
-    return NextResponse.json({ error: "Need at least 2 medications to check." }, { status: 400 });
+    return NextResponse.json({ error: NEED_MORE_MEDICATIONS_ERROR[language] }, { status: 400 });
   }
   if (names.length > 15) {
-    return NextResponse.json({ error: "Too many medications in one check." }, { status: 400 });
+    return NextResponse.json({ error: TOO_MANY_MEDICATIONS_ERROR[language] }, { status: 400 });
   }
 
   const apiKey = process.env.GROQ_API_KEY;
@@ -116,8 +138,7 @@ export async function POST(req: NextRequest) {
       hasKnownInteractions: false,
       summary: DEMO_SUMMARY[language],
       pairs: [],
-      disclaimer:
-        "Explicare is not a medical device and does not diagnose, treat, cure, or prevent any medical condition. This is educational information, not medical advice. Always review your full medication list with a doctor or pharmacist.",
+      disclaimer: FALLBACK_INTERACTIONS_DISCLAIMER[language],
     });
   }
 
@@ -138,7 +159,7 @@ export async function POST(req: NextRequest) {
       ],
     });
     const raw = completion.choices[0]?.message?.content ?? "";
-    const result = normalize(extractJson(raw));
+    const result = normalize(extractJson(raw), language);
     return NextResponse.json(result);
   } catch (err) {
     console.error("check-interactions error", err);
